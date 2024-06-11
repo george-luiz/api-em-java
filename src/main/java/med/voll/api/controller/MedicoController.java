@@ -26,7 +26,8 @@ public class MedicoController {
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao) { // Pageable para a Api ter paginação
         //return repository.findAll(paginacao).stream().map(DadosListagemMedico::new).toList(); // convertendo o findAll para mandar lista apenas com estes parametros: DadosListagemMedico
-        return repository.findAll(paginacao).map(DadosListagemMedico::new); // convertendo o findAll para mandar lista apenas com estes parametros: DadosListagemMedico
+        //return repository.findAll(paginacao).map(DadosListagemMedico::new); // convertendo o findAll para mandar lista apenas com estes parametros: DadosListagemMedico
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
     }
 
     @PutMapping
@@ -35,4 +36,14 @@ public class MedicoController {
         Medico medico = repository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void excluir(@PathVariable Long id) { // PathVariable: Anotação para indicar que é o parametro recebido acima pela URl
+//        repository.deleteById(id); para deletar do banco de dados
+        Medico medico = repository.getReferenceById(id);
+        medico.excluir();
+    }
+
+
 }
